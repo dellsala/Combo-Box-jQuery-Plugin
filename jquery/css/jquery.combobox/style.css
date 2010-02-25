@@ -1,0 +1,49 @@
+/*!
+ * jQuery Combobox Plugin 0.1
+ *
+ * Copyright 2010, Dell Sala
+ * http://dellsala.com/
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * Date: 2010-02-20
+ */
+.combobox {
+    margin-right: 0.1em;
+}
+
+.combobox_button {
+    background-color: #AAA;
+    background-image: url('./down-arrow.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    text-decoration: none;
+}
+
+.combobox_button {
+    * top: 1px !important;
+}
+
+.combobox_selector {
+    background-color: #EEE;
+    font-family: Helvetia, Arial, sans-serif;
+    font-size: 12px;
+    z-index: 1000;
+}
+
+.combobox_selector ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    border:1px solid #CCC;
+}
+
+.combobox_selector li {
+    padding: 2px 5px;
+}
+
+.combobox_selector li:hover,
+.combobox_selector li.selected {
+    background-color: #0066CC;
+    color: #FFF;
+}

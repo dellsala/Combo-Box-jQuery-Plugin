@@ -10,26 +10,41 @@
     <script type="text/javascript">
 
     jQuery(function () {
+
         jQuery('#input1').combobox([
             'Foo',
             'Bar',
             'Hello',
             'World'
         ]);
+
         jQuery('#input2').combobox([
             'Yo',
             'Mo',
             'Jo'
         ]);
+        
+        jQuery('#option_changer').click(function (e) {
+            jQuery.combobox.instances[0].setSelectOptions([
+                'Apples',
+                'Oranges',
+                'Bananas'
+            ]);
+        });
+        
     });
+    
     
     </script>
 </head>
 <body>
 
     <div>
-        <label for="input1">Field:</label> <input id="input1" type="text" value="">
-        <label for="input2">Field2:</label> <input id="input2" type="text" value="Hello">
+        <label for="input1">Field1:</label> <input id="input1" type="text" value="">
+        <label for="input2">Field2:</label> <input id="input2" type="text" value="Hello"><br>
+        <br>
+        <br>
+        <input id="option_changer" type="button" value="Change Field 1 Options">
     </div>
 
 </body>

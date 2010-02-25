@@ -30,8 +30,8 @@
             '<span class="combobox" style="position:relative; '+
             'display:-moz-inline-box; display:inline-block;"/>'
         );
-        var selector = new ComboboxSelector(this, selectOptions);
-        this.selector = selector;
+        this.selector = new ComboboxSelector(this);
+        this.selector.setSelectOptions(selectOptions);
         var inputHeight = this.textInputElement.outerHeight();
         var buttonLeftPosition = this.textInputElement.outerWidth() + 0;
         var showSelectorButton = jQuery(
@@ -40,15 +40,20 @@
             inputHeight+'px; top:0; left:'+buttonLeftPosition+'px;">&nbsp;</a>'
         ).insertAfter(this.textInputElement);
         this.textInputElement.css('margin', '0 '+showSelectorButton.outerWidth()+'px 0 0');
+        var thisSelector = this.selector;
         showSelectorButton.click(function (e) {
             jQuery('html').trigger('click');
-            selector.show();
+            thisSelector.show();
             return false;
         })
         this.bindKeypress();
     };
 
     Combobox.prototype = {
+
+        setSelectOptions : function (selectOptions) {
+            this.selector.setSelectOptions(selectOptions);
+        },
 
         bindKeypress : function () {
             var thisCombobox = this;
@@ -68,7 +73,7 @@
         focus : function () {
             this.textInputElement.trigger('focus');        	
         }
-
+        
     };
 
     Combobox.keys = {
@@ -80,9 +85,9 @@
 
 
 
-    var ComboboxSelector = function (combobox, selectOptions) {
+    var ComboboxSelector = function (combobox) {
         this.combobox = combobox;
-        this.optionCount = selectOptions.length;
+        this.optionCount = 0;
         this.selectedIndex = -1;
         var selectorTop = combobox.textInputElement.outerHeight();
         var selectorWidth = combobox.textInputElement.outerWidth();
@@ -92,7 +97,6 @@
             'px; position:absolute; left: 0; top: '+selectorTop+'px;"'+
             '></div>'
         ).insertAfter(this.combobox.textInputElement);
-        this.setSelectOptions(selectOptions);
         var thisSelector = this;
         jQuery('html').click(function () {
             thisSelector.hide();
@@ -119,6 +123,8 @@
     ComboboxSelector.prototype = {
 
         setSelectOptions : function (selectOptions) {
+            this.selectedIndex = -1;
+            this.optionCount = selectOptions.length;
             this.selectorElement.empty();
             var ulElement = jQuery('<ul></ul>').appendTo(this.selectorElement);
             for (var i = 0; i < selectOptions.length; i++) {

@@ -1,4 +1,16 @@
 +----------------+
+| version 0.2    |
+| 2010-02-25     |
++----------------+
+
+-- NEW FEATURES -- 
+
+* Combobox.setSelectOptions(): 
+    - new method for changing select options after instantiation.
+
+
+
++----------------+
 | version 0.1    |
 | 2010-02-25     |
 +----------------+

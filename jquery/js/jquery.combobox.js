@@ -1,12 +1,12 @@
 /*!
- * Combobox Plugin for jQuery, version 0.1
+ * Combobox Plugin for jQuery, version 0.2
  *
  * Copyright 2010, Dell Sala
  * http://dellsala.com/
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
- * Date: 2010-02-20
+ * Date: 2010-02-25
  */
 (function () {
 

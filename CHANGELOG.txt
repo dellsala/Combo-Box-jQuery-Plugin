@@ -1,0 +1,14 @@
++----------------+
+| version 0.1    |
+| 2010-02-25     |
++----------------+
+
+First version of jquery.combobox plugin.
+
+-- PRIMARY FEATURES -- 
+
+* jquery().combobox(): 
+    - converts matched text inputs into comboboxes with options provided.
+
+* jquery.combobox.instances():
+    - an array of Combobox object instances previously created.

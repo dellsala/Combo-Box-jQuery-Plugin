@@ -90,22 +90,12 @@
             '<div class="combobox_selector" '+
             'style="display:none; width:'+selectorWidth+
             'px; position:absolute; left: 0; top: '+selectorTop+'px;"'+
-            '><ul></ul></div>'
+            '></div>'
         ).insertAfter(this.combobox.textInputElement);
-        var ulElement = this.selectorElement.find('ul');
-        for (var i = 0; i < selectOptions.length; i++) {
-            ulElement.append('<li>'+selectOptions[i]+'</li>');
-        }
+        this.setSelectOptions(selectOptions);
         var thisSelector = this;
         jQuery('html').click(function () {
             thisSelector.hide();
-        });
-        this.selectorElement.find('li').click(function (e) {
-            thisSelector.hide();
-            thisSelector.combobox.setValue(this.innerHTML);
-        });
-        this.selectorElement.mouseover(function (e) {
-            thisSelector.unselect();
         });
         this.keydownHandler = function (e) {
             if (e.keyCode == Combobox.keys.DOWNARROW) {
@@ -127,6 +117,22 @@
 
 
     ComboboxSelector.prototype = {
+
+        setSelectOptions : function (selectOptions) {
+            this.selectorElement.empty();
+            var ulElement = jQuery('<ul></ul>').appendTo(this.selectorElement);
+            for (var i = 0; i < selectOptions.length; i++) {
+                ulElement.append('<li>'+selectOptions[i]+'</li>');
+            }
+            var thisSelector = this;
+            this.selectorElement.find('li').click(function (e) {
+                thisSelector.hide();
+                thisSelector.combobox.setValue(this.innerHTML);
+            });
+            this.selectorElement.mouseover(function (e) {
+                thisSelector.unselect();
+            });
+        },
 
         show : function () {
             jQuery('html').keydown(this.keydownHandler);

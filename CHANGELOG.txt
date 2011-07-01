@@ -1,4 +1,15 @@
 +----------------+
+| version 0.3    |
+| 2011-07-01     |
++----------------+
+
+-- NEW FEATURES -- 
+
+* Select list that gets displayed is filtered based on 
+    maching the starting letters of the value already in the input field.
+
+
++----------------+
 | version 0.2    |
 | 2010-02-25     |
 +----------------+

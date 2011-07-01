@@ -1,12 +1,12 @@
 /*!
- * jQuery Combobox Plugin 0.1
+ * jQuery Combobox Plugin 0.3
  *
- * Copyright 2010, Dell Sala
+ * Copyright 2011, Dell Sala
  * http://dellsala.com/
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
- * Date: 2010-02-20
+ * Date: 2011-07-01
  */
 .combobox {
     margin-right: 0.1em;
@@ -17,6 +17,10 @@
     background-image: url('./down-arrow.gif');
     background-position: center;
     background-repeat: no-repeat;
+    text-decoration: none;
+}
+
+.combobox_button:hover {
     text-decoration: none;
 }
 

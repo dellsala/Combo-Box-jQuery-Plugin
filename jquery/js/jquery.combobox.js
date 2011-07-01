@@ -1,12 +1,12 @@
 /*!
- * Combobox Plugin for jQuery, version 0.2
+ * Combobox Plugin for jQuery, version 0.3
  *
- * Copyright 2010, Dell Sala
+ * Copyright 2011, Dell Sala
  * http://dellsala.com/
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
- * Date: 2010-02-25
+ * Date: 2011-07-01
  */
 (function () {
 
@@ -31,7 +31,7 @@
             'display:-moz-inline-box; display:inline-block;"/>'
         );
         this.selector = new ComboboxSelector(this);
-        this.selector.setSelectOptions(selectOptions);
+        this.setSelectOptions(selectOptions);
         var inputHeight = this.textInputElement.outerHeight();
         var buttonLeftPosition = this.textInputElement.outerWidth() + 0;
         var showSelectorButton = jQuery(
@@ -53,14 +53,17 @@
 
         setSelectOptions : function (selectOptions) {
             this.selector.setSelectOptions(selectOptions);
+            this.selector.buildSelectOptionList(this.getValue());
         },
 
         bindKeypress : function () {
             var thisCombobox = this;
-            this.textInputElement.keydown(function (event) {
+            this.textInputElement.keypress(function (event) {
+                thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
                 if (event.keyCode == Combobox.keys.DOWNARROW) {
-                    thisCombobox.textInputElement.trigger('blur');
-                    thisCombobox.selector.show();
+                    if (thisCombobox.selector.show()) {
+                        thisCombobox.textInputElement.trigger('blur');
+                    }
                     event.stopPropagation();
                 }
             });
@@ -68,6 +71,10 @@
         
         setValue : function (value) {
             this.textInputElement.val(value);
+        },
+
+        getValue : function () {
+            return this.textInputElement.val();
         },
         
         focus : function () {
@@ -89,6 +96,7 @@
         this.combobox = combobox;
         this.optionCount = 0;
         this.selectedIndex = -1;
+        this.allSelectOptions = [];
         var selectorTop = combobox.textInputElement.outerHeight();
         var selectorWidth = combobox.textInputElement.outerWidth();
         this.selectorElement = jQuery(
@@ -101,7 +109,7 @@
         jQuery('html').click(function () {
             thisSelector.hide();
         });
-        this.keydownHandler = function (e) {
+        this.keypressHandler = function (e) {
             if (e.keyCode == Combobox.keys.DOWNARROW) {
                 thisSelector.selectNext();
             } else if (e.keyCode == Combobox.keys.UPARROW) {
@@ -123,9 +131,24 @@
     ComboboxSelector.prototype = {
 
         setSelectOptions : function (selectOptions) {
+            this.allSelectOptions = selectOptions;
+        },
+
+        buildSelectOptionList : function (startingLetters) {
+            if (! startingLetters) {
+                startingLetters = "";
+            }
             this.selectedIndex = -1;
-            this.optionCount = selectOptions.length;
             this.selectorElement.empty();
+            var selectOptions = [];
+            for (var i=0; i < this.allSelectOptions.length; i++) {
+                if (! startingLetters.length 
+                    || this.allSelectOptions[i].toLowerCase().indexOf(startingLetters.toLowerCase()) === 0)
+                {
+                    selectOptions.push(this.allSelectOptions[i]);
+                }
+            }
+            this.optionCount = selectOptions.length;
             var ulElement = jQuery('<ul></ul>').appendTo(this.selectorElement);
             for (var i = 0; i < selectOptions.length; i++) {
                 ulElement.append('<li>'+selectOptions[i]+'</li>');
@@ -141,13 +164,17 @@
         },
 
         show : function () {
-            jQuery('html').keydown(this.keydownHandler);
+            if (this.selectorElement.find('li').length < 1) {
+                return false;
+            }
+            jQuery('html').keypress(this.keypressHandler);
             this.selectorElement.slideDown('fast');
             thisSelector = this;
+            return true;
         },
 
         hide : function () {
-            jQuery('html').unbind('keydown', this.keydownHandler);
+            jQuery('html').unbind('keypress', this.keypressHandler);
             this.selectorElement.unbind('click');
             this.unselect();
             this.selectorElement.hide();

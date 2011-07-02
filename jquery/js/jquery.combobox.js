@@ -43,6 +43,7 @@
         var thisSelector = this.selector;
         showSelectorButton.click(function (e) {
             jQuery('html').trigger('click');
+            thisSelector.buildSelectOptionList();
             thisSelector.show();
             return false;
         })
@@ -59,29 +60,27 @@
         bindKeypress : function () {
             var thisCombobox = this;
             this.textInputElement.keyup(function (event) {
-                thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
-                thisCombobox.selector.show()
-                if (event.keyCode == Combobox.keys.DOWNARROW
-                    || event.keyCode == Combobox.keys.UPARROW
-                    || event.keyCode == Combobox.keys.ESCAPE) {
+                console.log(event.keyCode);
+                if (event.keyCode == Combobox.keys.TAB
+                    || event.keyCode == Combobox.keys.SHIFT) 
+                {
+                    return;
+                }
+                if (event.keyCode != Combobox.keys.DOWNARROW
+                    && event.keyCode != Combobox.keys.UPARROW
+                    && event.keyCode != Combobox.keys.ESCAPE) 
+                {
+                    thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
 /*
                     if (thisCombobox.selector.show()) {
                         thisCombobox.textInputElement.trigger('blur');
                     }
-*/
                     thisCombobox.textInputElement.trigger('blur');
+*/
                     //event.stopPropagation();
                     //return;
                 }
-                //thisCombobox.selector.show()
-                /*
-                if (event.keyCode == Combobox.keys.DOWNARROW) {
-                    if (thisCombobox.selector.show()) {
-                        thisCombobox.textInputElement.trigger('blur');
-                    }
-                    event.stopPropagation();
-                }
-                */
+                thisCombobox.selector.show()
             });
         },
         
@@ -103,7 +102,9 @@
         UPARROW : 38,
         DOWNARROW : 40,
         ENTER : 13,
-        ESCAPE : 27
+        ESCAPE : 27,
+        TAB : 9,
+        SHIFT : 16
     };
 
 
@@ -180,7 +181,10 @@
         },
 
         show : function () {
-            if (this.selectorElement.find('li').length < 1) {
+            if (this.selectorElement.find('li').length < 1
+                || this.selectorElement.is(':visible'))
+            {
+                console.log('already visible');
                 return false;
             }
             jQuery('html').keyup(this.keypressHandler);
@@ -216,6 +220,9 @@
             this.unselect();
         	this.selectorElement.find('li:eq('+index+')').addClass('selected');
         	this.selectedIndex = index;
+        	console.log('option count: '+this.optionCount);
+        	console.log('selected option: '+this.selectedIndex);
+        	console.log('li count: '+this.selectorElement.find('li').length);
         },
 
         unselect : function () {

@@ -58,14 +58,30 @@
 
         bindKeypress : function () {
             var thisCombobox = this;
-            this.textInputElement.keypress(function (event) {
+            this.textInputElement.keyup(function (event) {
                 thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
+                thisCombobox.selector.show()
+                if (event.keyCode == Combobox.keys.DOWNARROW
+                    || event.keyCode == Combobox.keys.UPARROW
+                    || event.keyCode == Combobox.keys.ESCAPE) {
+/*
+                    if (thisCombobox.selector.show()) {
+                        thisCombobox.textInputElement.trigger('blur');
+                    }
+*/
+                    thisCombobox.textInputElement.trigger('blur');
+                    //event.stopPropagation();
+                    //return;
+                }
+                //thisCombobox.selector.show()
+                /*
                 if (event.keyCode == Combobox.keys.DOWNARROW) {
                     if (thisCombobox.selector.show()) {
                         thisCombobox.textInputElement.trigger('blur');
                     }
                     event.stopPropagation();
                 }
+                */
             });
         },
         
@@ -138,7 +154,7 @@
             if (! startingLetters) {
                 startingLetters = "";
             }
-            this.selectedIndex = -1;
+            this.unselect();
             this.selectorElement.empty();
             var selectOptions = [];
             for (var i=0; i < this.allSelectOptions.length; i++) {
@@ -167,14 +183,14 @@
             if (this.selectorElement.find('li').length < 1) {
                 return false;
             }
-            jQuery('html').keypress(this.keypressHandler);
+            jQuery('html').keyup(this.keypressHandler);
             this.selectorElement.slideDown('fast');
             thisSelector = this;
             return true;
         },
 
         hide : function () {
-            jQuery('html').unbind('keypress', this.keypressHandler);
+            jQuery('html').unbind('keyup', this.keypressHandler);
             this.selectorElement.unbind('click');
             this.unselect();
             this.selectorElement.hide();
@@ -203,7 +219,7 @@
         },
 
         unselect : function () {
-        	this.selectorElement.find('li:eq('+this.selectedIndex+')').removeClass('selected');
+        	this.selectorElement.find('li').removeClass('selected');
         	this.selectedIndex = -1;
         },
         

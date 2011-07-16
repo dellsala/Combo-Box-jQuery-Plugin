@@ -68,17 +68,10 @@
                 }
                 if (event.keyCode != Combobox.keys.DOWNARROW
                     && event.keyCode != Combobox.keys.UPARROW
-                    && event.keyCode != Combobox.keys.ESCAPE) 
+                    && event.keyCode != Combobox.keys.ESCAPE
+                    && event.keyCode != Combobox.keys.ENTER)
                 {
                     thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
-/*
-                    if (thisCombobox.selector.show()) {
-                        thisCombobox.textInputElement.trigger('blur');
-                    }
-                    thisCombobox.textInputElement.trigger('blur');
-*/
-                    //event.stopPropagation();
-                    //return;
                 }
                 thisCombobox.selector.show()
             });
@@ -158,6 +151,7 @@
             this.unselect();
             this.selectorElement.empty();
             var selectOptions = [];
+            this.selectedIndex = -1;
             for (var i=0; i < this.allSelectOptions.length; i++) {
                 if (! startingLetters.length 
                     || this.allSelectOptions[i].toLowerCase().indexOf(startingLetters.toLowerCase()) === 0)

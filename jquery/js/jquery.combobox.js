@@ -1,5 +1,5 @@
 /*!
- * Combobox Plugin for jQuery, version 0.3
+ * Combobox Plugin for jQuery, version 0.4
  *
  * Copyright 2011, Dell Sala
  * http://dellsala.com/

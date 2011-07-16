@@ -41,10 +41,12 @@
         ).insertAfter(this.textInputElement);
         this.textInputElement.css('margin', '0 '+showSelectorButton.outerWidth()+'px 0 0');
         var thisSelector = this.selector;
+        var thisCombobox = this;
         showSelectorButton.click(function (e) {
             jQuery('html').trigger('click');
             thisSelector.buildSelectOptionList();
             thisSelector.show();
+            thisCombobox.focus();
             return false;
         })
         this.bindKeypress();
@@ -168,6 +170,7 @@
             this.selectorElement.find('li').click(function (e) {
                 thisSelector.hide();
                 thisSelector.combobox.setValue(this.innerHTML);
+                thisSelector.combobox.focus();
             });
             this.selectorElement.mouseover(function (e) {
                 thisSelector.unselect();

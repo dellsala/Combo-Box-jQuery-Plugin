@@ -1,4 +1,15 @@
 +----------------+
+| version 0.4    |
+| 2011-07-16     |
++----------------+
+
+-- NEW FEATURES -- 
+
+* behaves more like an auto-complete.
+* clicking options button shows all options, unfiltered
+
+
++----------------+
 | version 0.3    |
 | 2011-07-01     |
 +----------------+

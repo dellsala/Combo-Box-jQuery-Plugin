@@ -41,9 +41,12 @@
         ).insertAfter(this.textInputElement);
         this.textInputElement.css('margin', '0 '+showSelectorButton.outerWidth()+'px 0 0');
         var thisSelector = this.selector;
+        var thisCombobox = this;
         showSelectorButton.click(function (e) {
             jQuery('html').trigger('click');
+            thisSelector.buildSelectOptionList();
             thisSelector.show();
+            thisCombobox.focus();
             return false;
         })
         this.bindKeypress();
@@ -58,14 +61,21 @@
 
         bindKeypress : function () {
             var thisCombobox = this;
-            this.textInputElement.keypress(function (event) {
-                thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
-                if (event.keyCode == Combobox.keys.DOWNARROW) {
-                    if (thisCombobox.selector.show()) {
-                        thisCombobox.textInputElement.trigger('blur');
-                    }
-                    event.stopPropagation();
+            this.textInputElement.keyup(function (event) {
+                console.log(event.keyCode);
+                if (event.keyCode == Combobox.keys.TAB
+                    || event.keyCode == Combobox.keys.SHIFT) 
+                {
+                    return;
                 }
+                if (event.keyCode != Combobox.keys.DOWNARROW
+                    && event.keyCode != Combobox.keys.UPARROW
+                    && event.keyCode != Combobox.keys.ESCAPE
+                    && event.keyCode != Combobox.keys.ENTER)
+                {
+                    thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
+                }
+                thisCombobox.selector.show()
             });
         },
         
@@ -87,7 +97,9 @@
         UPARROW : 38,
         DOWNARROW : 40,
         ENTER : 13,
-        ESCAPE : 27
+        ESCAPE : 27,
+        TAB : 9,
+        SHIFT : 16
     };
 
 
@@ -138,9 +150,10 @@
             if (! startingLetters) {
                 startingLetters = "";
             }
-            this.selectedIndex = -1;
+            this.unselect();
             this.selectorElement.empty();
             var selectOptions = [];
+            this.selectedIndex = -1;
             for (var i=0; i < this.allSelectOptions.length; i++) {
                 if (! startingLetters.length 
                     || this.allSelectOptions[i].toLowerCase().indexOf(startingLetters.toLowerCase()) === 0)
@@ -157,6 +170,7 @@
             this.selectorElement.find('li').click(function (e) {
                 thisSelector.hide();
                 thisSelector.combobox.setValue(this.innerHTML);
+                thisSelector.combobox.focus();
             });
             this.selectorElement.mouseover(function (e) {
                 thisSelector.unselect();
@@ -164,17 +178,20 @@
         },
 
         show : function () {
-            if (this.selectorElement.find('li').length < 1) {
+            if (this.selectorElement.find('li').length < 1
+                || this.selectorElement.is(':visible'))
+            {
+                console.log('already visible');
                 return false;
             }
-            jQuery('html').keypress(this.keypressHandler);
+            jQuery('html').keyup(this.keypressHandler);
             this.selectorElement.slideDown('fast');
             thisSelector = this;
             return true;
         },
 
         hide : function () {
-            jQuery('html').unbind('keypress', this.keypressHandler);
+            jQuery('html').unbind('keyup', this.keypressHandler);
             this.selectorElement.unbind('click');
             this.unselect();
             this.selectorElement.hide();
@@ -200,10 +217,13 @@
             this.unselect();
         	this.selectorElement.find('li:eq('+index+')').addClass('selected');
         	this.selectedIndex = index;
+        	console.log('option count: '+this.optionCount);
+        	console.log('selected option: '+this.selectedIndex);
+        	console.log('li count: '+this.selectorElement.find('li').length);
         },
 
         unselect : function () {
-        	this.selectorElement.find('li:eq('+this.selectedIndex+')').removeClass('selected');
+        	this.selectorElement.find('li').removeClass('selected');
         	this.selectedIndex = -1;
         },
         

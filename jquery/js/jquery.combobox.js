@@ -1,12 +1,12 @@
 /*!
- * Combobox Plugin for jQuery, version 0.4
+ * Combobox Plugin for jQuery, version 0.4.1
  *
  * Copyright 2011, Dell Sala
  * http://dellsala.com/
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
- * Date: 2011-07-01
+ * Date: 2011-07-21
  */
 (function () {
 
@@ -62,7 +62,6 @@
         bindKeypress : function () {
             var thisCombobox = this;
             this.textInputElement.keyup(function (event) {
-                console.log(event.keyCode);
                 if (event.keyCode == Combobox.keys.TAB
                     || event.keyCode == Combobox.keys.SHIFT) 
                 {
@@ -181,7 +180,6 @@
             if (this.selectorElement.find('li').length < 1
                 || this.selectorElement.is(':visible'))
             {
-                console.log('already visible');
                 return false;
             }
             jQuery('html').keyup(this.keypressHandler);
@@ -217,9 +215,6 @@
             this.unselect();
         	this.selectorElement.find('li:eq('+index+')').addClass('selected');
         	this.selectedIndex = index;
-        	console.log('option count: '+this.optionCount);
-        	console.log('selected option: '+this.selectedIndex);
-        	console.log('li count: '+this.selectorElement.find('li').length);
         },
 
         unselect : function () {

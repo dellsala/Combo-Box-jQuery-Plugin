@@ -7,13 +7,16 @@
  * http://jquery.org/license
  *
  * Date: 2011-07-21
+ *
+ * modified by hSATAC(Ash Wu)
  */
 (function () {
 
-    jQuery.fn.combobox = function (selectOptions) {
+    jQuery.fn.combobox = function (selectOptions, selectValues) {
+
     
         return this.each(function () {
-            var newCombobox = new Combobox(this, selectOptions);
+            var newCombobox = new Combobox(this, selectOptions, selectValues);
             jQuery.combobox.instances.push(newCombobox);
         });
     
@@ -24,20 +27,19 @@
     };
 
 
-    var Combobox = function (textInputElement, selectOptions) {
+    var Combobox = function (textInputElement, selectOptions, selectValues) {
         this.textInputElement = jQuery(textInputElement);
         var container = this.textInputElement.wrap(
             '<span class="combobox" style="position:relative; '+
             'display:-moz-inline-box; display:inline-block;"/>'
         );
         this.selector = new ComboboxSelector(this);
-        this.setSelectOptions(selectOptions);
+        this.setSelectOptions(selectOptions, selectValues);
         var inputHeight = this.textInputElement.outerHeight();
         var buttonLeftPosition = this.textInputElement.outerWidth() + 0;
         var showSelectorButton = jQuery(
             '<a href="#" class="combobox_button" '+
-            'style="position:absolute; height:'+inputHeight+'px; width:'+
-            inputHeight+'px; top:0; left:'+buttonLeftPosition+'px;">&nbsp;</a>'
+            'style="position:absolute; height:'+inputHeight+'px; width:18px; top:0; left:'+buttonLeftPosition+'px;"><b class="combobox_arrow"></b></a>'
         ).insertAfter(this.textInputElement);
         this.textInputElement.css('margin', '0 '+showSelectorButton.outerWidth()+'px 0 0');
         var thisSelector = this.selector;
@@ -54,8 +56,9 @@
 
     Combobox.prototype = {
 
-        setSelectOptions : function (selectOptions) {
-            this.selector.setSelectOptions(selectOptions);
+        setSelectOptions : function (selectOptions, selectValues) {
+            if(typeof(selectValues) == 'undefined') selectValues = selectOptions;
+            this.selector.setSelectOptions(selectOptions, selectValues);
             this.selector.buildSelectOptionList(this.getValue());
         },
 
@@ -108,12 +111,13 @@
         this.optionCount = 0;
         this.selectedIndex = -1;
         this.allSelectOptions = [];
+        this.allSelectValues = [];
         var selectorTop = combobox.textInputElement.outerHeight();
         var selectorWidth = combobox.textInputElement.outerWidth();
         this.selectorElement = jQuery(
             '<div class="combobox_selector" '+
-            'style="display:none; width:'+selectorWidth+
-            'px; position:absolute; left: 0; top: '+selectorTop+'px;"'+
+            'style="display:none; width:'+(selectorWidth+18)+
+            'px; max-height: 350px;position:absolute; left: 0; top: '+selectorTop+'px;overflow-x:auto;overflow-y: auto;"'+
             '></div>'
         ).insertAfter(this.combobox.textInputElement);
         var thisSelector = this;
@@ -141,8 +145,9 @@
 
     ComboboxSelector.prototype = {
 
-        setSelectOptions : function (selectOptions) {
+        setSelectOptions : function (selectOptions, selectValues) {
             this.allSelectOptions = selectOptions;
+            this.allSelectValues = selectValues;
         },
 
         buildSelectOptionList : function (startingLetters) {
@@ -163,13 +168,14 @@
             this.optionCount = selectOptions.length;
             var ulElement = jQuery('<ul></ul>').appendTo(this.selectorElement);
             for (var i = 0; i < selectOptions.length; i++) {
-                ulElement.append('<li>'+selectOptions[i]+'</li>');
+                ulElement.append('<li data="'+this.allSelectValues[i]+'">'+selectOptions[i]+'</li>');
             }
             var thisSelector = this;
             this.selectorElement.find('li').click(function (e) {
                 thisSelector.hide();
-                thisSelector.combobox.setValue(this.innerHTML);
+                thisSelector.combobox.setValue(jQuery(this).attr('data'));
                 thisSelector.combobox.focus();
+                jQuery(thisSelector.combobox.textInputElement).trigger('change');
             });
             this.selectorElement.mouseover(function (e) {
                 thisSelector.unselect();
@@ -230,3 +236,4 @@
 
 
 })();
+

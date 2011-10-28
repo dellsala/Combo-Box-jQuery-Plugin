@@ -21,11 +21,10 @@
             'woo'
         ]);
 
-        jQuery('#input2').combobox([
-            'Yo',
-            'Mo',
-            'Jo'
-        ]);
+        // You could pass second array , it would treat it like values just like native select input
+        jQuery('#input2').combobox(
+          ['Yo','Mo', 'Jo'],
+          ['Option 1','Option 2','Option 3']);
         
         jQuery('#option_changer').click(function (e) {
             jQuery.combobox.instances[0].setSelectOptions([

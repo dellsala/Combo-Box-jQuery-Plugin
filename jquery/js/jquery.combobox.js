@@ -157,21 +157,24 @@
             this.unselect();
             this.selectorElement.empty();
             var selectOptions = [];
+            var selectValues  = [];
             this.selectedIndex = -1;
             for (var i=0; i < this.allSelectOptions.length; i++) {
                 if (! startingLetters.length 
                     || this.allSelectOptions[i].toLowerCase().indexOf(startingLetters.toLowerCase()) === 0)
                 {
                     selectOptions.push(this.allSelectOptions[i]);
+                    selectValues.push(this.allSelectValues[i]);
                 }
             }
             this.optionCount = selectOptions.length;
             var ulElement = jQuery('<ul></ul>').appendTo(this.selectorElement);
             for (var i = 0; i < selectOptions.length; i++) {
-                ulElement.append('<li data="'+this.allSelectValues[i]+'">'+selectOptions[i]+'</li>');
+                ulElement.append('<li data="'+selectValues[i]+'">'+selectOptions[i]+'</li>');
             }
             var thisSelector = this;
             this.selectorElement.find('li').click(function (e) {
+                alert(jQuery(this).attr('data'));
                 thisSelector.hide();
                 thisSelector.combobox.setValue(jQuery(this).attr('data'));
                 thisSelector.combobox.focus();

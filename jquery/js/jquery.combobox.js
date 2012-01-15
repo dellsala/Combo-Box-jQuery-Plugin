@@ -117,9 +117,6 @@
             '></div>'
         ).insertAfter(this.combobox.textInputElement);
         var thisSelector = this;
-        jQuery('html').click(function () {
-            thisSelector.hide();
-        });
         this.keypressHandler = function (e) {
             if (e.keyCode == Combobox.keys.DOWNARROW) {
                 thisSelector.selectNext();
@@ -174,6 +171,10 @@
             this.selectorElement.mouseover(function (e) {
                 thisSelector.unselect();
             });
+            this.htmlClickHandler = function () {
+                thisSelector.hide();
+            };
+
         },
 
         show : function () {
@@ -184,12 +185,13 @@
             }
             jQuery('html').keyup(this.keypressHandler);
             this.selectorElement.slideDown('fast');
-            thisSelector = this;
+            jQuery('html').click(this.htmlClickHandler);
             return true;
         },
 
         hide : function () {
             jQuery('html').unbind('keyup', this.keypressHandler);
+            jQuery('html').unbind('click', this.htmlClickHandler);
             this.selectorElement.unbind('click');
             this.unselect();
             this.selectorElement.hide();

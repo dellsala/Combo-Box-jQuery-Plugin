@@ -1,12 +1,13 @@
 /*!
- * Combobox Plugin for jQuery, version 0.4.1
+ * Combobox Plugin for jQuery, version 0.5.0
  *
- * Copyright 2011, Dell Sala
+ * Copyright 2012, Dell Sala
  * http://dellsala.com/
+ * https://github.com/dellsala/Combo-Box-jQuery-Plugin
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
- * Date: 2011-07-21
+ * Date: 2012-01-15
  */
 (function () {
 

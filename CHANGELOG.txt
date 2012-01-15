@@ -1,4 +1,20 @@
 +----------------+
+| version 0.5.0  |
+| 2012-01-15     |
++----------------+
+
+-- NEW FEATURES -- 
+
+* minor tweak to button styling - new arrow graphic - minor generated markup change
+
+-- FIXES -- 
+
+* fixed #2: html click behavior is now attached and unattached as 
+  select list is displayed and hidden. 
+* added max-height with scrolling to selector list
+
+
++----------------+
 | version 0.4.1  |
 | 2011-07-21     |
 +----------------+

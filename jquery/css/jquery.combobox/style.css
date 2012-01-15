@@ -14,7 +14,7 @@
 .combobox_arrow{
   
 
-    background: url("sprite.png") no-repeat scroll 0 1px transparent;
+    background: transparent url("down-arrow.png") no-repeat center center;
     display: block;
     height: 100%;
     width: 100%;
@@ -36,7 +36,6 @@
   background-image: -ms-linear-gradient(top, #cccccc 0%,#eeeeee 60%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#eeeeee',GradientType=0 );
   background-image: linear-gradient(top, #cccccc 0%,#eeeeee 60%);
-  border-left: 1px solid #aaa;
   position: absolute;
   right: 0;
   top: 0;

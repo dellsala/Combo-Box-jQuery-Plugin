@@ -58,6 +58,8 @@
     font-family: Helvetia, Arial, sans-serif;
     font-size: 12px;
     z-index: 1000;
+    max-height: 200px;
+    overflow: auto;
 }
 
 .combobox_selector ul {

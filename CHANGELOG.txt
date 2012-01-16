@@ -6,6 +6,7 @@
 -- NEW FEATURES -- 
 
 * minor tweak to button styling - new arrow graphic - minor generated markup change
+* changing combobox value using selector triggers input change event
 
 -- FIXES -- 
 

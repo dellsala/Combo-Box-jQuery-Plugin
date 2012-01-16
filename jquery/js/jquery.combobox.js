@@ -80,7 +80,11 @@
         },
         
         setValue : function (value) {
+            var oldValue = this.textInputElement.val();
             this.textInputElement.val(value);
+            if (oldValue != value) {
+                this.textInputElement.trigger('change');
+            }
         },
 
         getValue : function () {

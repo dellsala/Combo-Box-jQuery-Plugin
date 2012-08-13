@@ -39,8 +39,9 @@
             '<a href="#" class="combobox_button" '+
             'style="position:absolute; height:'+inputHeight+'px; width:'+
             inputHeight+'px; top:0; left:'+buttonLeftPosition+'px;"><div class="combobox_arrow"></div></a>'
-        ).insertAfter(this.textInputElement);
+        );
         this.textInputElement.css('margin', '0 '+showSelectorButton.outerWidth()+'px 0 0');
+        showSelectorButton.insertAfter(this.textInputElement);
         var thisSelector = this.selector;
         var thisCombobox = this;
         showSelectorButton.click(function (e) {
@@ -49,7 +50,7 @@
             thisSelector.show();
             thisCombobox.focus();
             return false;
-        })
+        });
         this.bindKeypress();
     };
 

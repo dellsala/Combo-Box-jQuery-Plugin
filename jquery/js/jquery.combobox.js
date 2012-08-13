@@ -27,7 +27,7 @@
 
     var Combobox = function (textInputElement, selectOptions) {
         this.textInputElement = jQuery(textInputElement);
-        var container = this.textInputElement.wrap(
+        this.textInputElement.wrap(
             '<span class="combobox" style="position:relative; '+
             'display:-moz-inline-box; display:inline-block;"/>'
         );
@@ -139,7 +139,7 @@
             return false;
         }
         
-    }
+    };
 
 
     ComboboxSelector.prototype = {
@@ -155,8 +155,9 @@
             this.unselect();
             this.selectorElement.empty();
             var selectOptions = [];
+            var i;
             this.selectedIndex = -1;
-            for (var i=0; i < this.allSelectOptions.length; i++) {
+            for (i=0; i < this.allSelectOptions.length; i++) {
                 if (! startingLetters.length 
                     || this.allSelectOptions[i].toLowerCase().indexOf(startingLetters.toLowerCase()) === 0)
                 {
@@ -165,7 +166,7 @@
             }
             this.optionCount = selectOptions.length;
             var ulElement = jQuery('<ul></ul>').appendTo(this.selectorElement);
-            for (var i = 0; i < selectOptions.length; i++) {
+            for (i = 0; i < selectOptions.length; i++) {
                 ulElement.append('<li>'+selectOptions[i]+'</li>');
             }
             var thisSelector = this;

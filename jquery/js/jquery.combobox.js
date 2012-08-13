@@ -76,6 +76,10 @@
                 {
                     thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
                 }
+                if (event.keyCode === Combobox.keys.ENTER)
+                {
+                    return;
+                }
                 thisCombobox.selector.show()
             });
         },
@@ -132,13 +136,15 @@
                 thisSelector.hide();
                 thisSelector.combobox.focus();
             } else if (e.keyCode == Combobox.keys.ENTER) {
+                if(thisSelector.selectedIndex !== -1){
+                    e.preventDefault();
+                }
                 thisSelector.combobox.setValue(thisSelector.getSelectedValue());
                 thisSelector.combobox.focus();
                 thisSelector.hide();
             } else if(e.keyCode == Combobox.keys.TAB){
                 thisSelector.hide();
             }
-            return false;
         }
         
     };
@@ -192,14 +198,14 @@
             {
                 return false;
             }
-            jQuery('html').keyup(this.keypressHandler);
+            jQuery('html').keydown(this.keypressHandler);
             this.selectorElement.slideDown('fast');
             jQuery('html').click(this.htmlClickHandler);
             return true;
         },
 
         hide : function () {
-            jQuery('html').unbind('keyup', this.keypressHandler);
+            jQuery('html').unbind('keydown', this.keypressHandler);
             jQuery('html').unbind('click', this.htmlClickHandler);
             this.selectorElement.unbind('click');
             this.unselect();

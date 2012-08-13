@@ -27,7 +27,7 @@
 
     var Combobox = function (textInputElement, selectOptions) {
         this.textInputElement = jQuery(textInputElement);
-        var container = this.textInputElement.wrap(
+        this.textInputElement.wrap(
             '<span class="combobox" style="position:relative; '+
             'display:-moz-inline-box; display:inline-block;"/>'
         );
@@ -39,8 +39,9 @@
             '<a href="#" class="combobox_button" '+
             'style="position:absolute; height:'+inputHeight+'px; width:'+
             inputHeight+'px; top:0; left:'+buttonLeftPosition+'px;"><div class="combobox_arrow"></div></a>'
-        ).insertAfter(this.textInputElement);
+        );
         this.textInputElement.css('margin', '0 '+showSelectorButton.outerWidth()+'px 0 0');
+        showSelectorButton.insertAfter(this.textInputElement);
         var thisSelector = this.selector;
         var thisCombobox = this;
         showSelectorButton.click(function (e) {
@@ -49,7 +50,7 @@
             thisSelector.show();
             thisCombobox.focus();
             return false;
-        })
+        });
         this.bindKeypress();
     };
 
@@ -74,6 +75,10 @@
                     && event.keyCode != Combobox.keys.ENTER)
                 {
                     thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
+                }
+                if (event.keyCode === Combobox.keys.ENTER)
+                {
+                    return;
                 }
                 thisCombobox.selector.show()
             });
@@ -131,14 +136,18 @@
                 thisSelector.hide();
                 thisSelector.combobox.focus();
             } else if (e.keyCode == Combobox.keys.ENTER) {
+                if(thisSelector.selectedIndex !== -1){
+                    e.preventDefault();
+                }
                 thisSelector.combobox.setValue(thisSelector.getSelectedValue());
                 thisSelector.combobox.focus();
                 thisSelector.hide();
+            } else if(e.keyCode == Combobox.keys.TAB){
+                thisSelector.hide();
             }
-            return false;
         }
         
-    }
+    };
 
 
     ComboboxSelector.prototype = {
@@ -155,7 +164,8 @@
             this.selectorElement.empty();
             var selectOptions = [];
             this.selectedIndex = -1;
-            for (var i=0; i < this.allSelectOptions.length; i++) {
+            var i;
+            for (i=0; i < this.allSelectOptions.length; i++) {
                 if (! startingLetters.length 
                     || this.allSelectOptions[i].toLowerCase().indexOf(startingLetters.toLowerCase()) === 0)
                 {
@@ -164,7 +174,7 @@
             }
             this.optionCount = selectOptions.length;
             var ulElement = jQuery('<ul></ul>').appendTo(this.selectorElement);
-            for (var i = 0; i < selectOptions.length; i++) {
+            for (i = 0; i < selectOptions.length; i++) {
                 ulElement.append('<li>'+selectOptions[i]+'</li>');
             }
             var thisSelector = this;
@@ -188,14 +198,14 @@
             {
                 return false;
             }
-            jQuery('html').keyup(this.keypressHandler);
+            jQuery('html').keydown(this.keypressHandler);
             this.selectorElement.slideDown('fast');
             jQuery('html').click(this.htmlClickHandler);
             return true;
         },
 
         hide : function () {
-            jQuery('html').unbind('keyup', this.keypressHandler);
+            jQuery('html').unbind('keydown', this.keypressHandler);
             jQuery('html').unbind('click', this.htmlClickHandler);
             this.selectorElement.unbind('click');
             this.unselect();
@@ -230,7 +240,11 @@
         },
         
         getSelectedValue : function () {
-        	return this.selectorElement.find('li').get(this.selectedIndex).innerHTML;
+            if(this.selectedIndex !== -1){
+                return this.selectorElement.find('li').get(this.selectedIndex).innerHTML;
+            } else {
+                return this.combobox.textInputElement.val();
+            }
         }
 
     };

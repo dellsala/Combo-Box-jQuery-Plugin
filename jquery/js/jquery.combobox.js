@@ -234,7 +234,11 @@
         },
         
         getSelectedValue : function () {
-        	return this.selectorElement.find('li').get(this.selectedIndex).innerHTML;
+            if(this.selectedIndex !== -1){
+                return this.selectorElement.find('li').get(this.selectedIndex).innerHTML;
+            } else {
+                return this.combobox.textInputElement.val();
+            }
         }
 
     };

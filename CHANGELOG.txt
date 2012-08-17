@@ -1,4 +1,19 @@
 +----------------+
+| version 0.5.1  |
+| 2012-08-17     |
++----------------+
+
+-- FIXES -- 
+
+* reduced browser layout activity 
+* Made change so that combobox could be used in conjunction with a form 
+  that submits on enter key press
+* fixed issue where tabbing away from field doesn't hide drop down
+
+Thanks to Patrick Cook https://github.com/kycook
+
+
++----------------+
 | version 0.5.0  |
 | 2012-01-15     |
 +----------------+

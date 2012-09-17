@@ -183,7 +183,7 @@
             var thisSelector = this;
             this.selectorElement.find('li').click(function (e) {
                 thisSelector.hide();
-                thisSelector.combobox.setValue(jQuery(this).text());
+                thisSelector.combobox.setValue(this.innerHTML);
                 thisSelector.combobox.focus();
             });
             this.selectorElement.mouseover(function (e) {
@@ -250,7 +250,7 @@
         
         getSelectedValue : function () {
             if(this.selectedIndex !== -1){
-                return jQuery(this.selectorElement.find('li').get(this.selectedIndex)).text();
+                return this.selectorElement.find('li').get(this.selectedIndex).innerHTML;
             } else {
                 return this.combobox.textInputElement.val();
             }

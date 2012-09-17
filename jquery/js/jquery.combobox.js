@@ -175,12 +175,14 @@
             this.optionCount = selectOptions.length;
             var ulElement = jQuery('<ul></ul>').appendTo(this.selectorElement);
             for (i = 0; i < selectOptions.length; i++) {
-                ulElement.append('<li>'+selectOptions[i]+'</li>');
+                ulElement.append(jQuery('<li/>', {
+                    text: selectOptions[i]
+                }));
             }
             var thisSelector = this;
             this.selectorElement.find('li').click(function (e) {
                 thisSelector.hide();
-                thisSelector.combobox.setValue(this.innerHTML);
+                thisSelector.combobox.setValue(jQuery(this).text());
                 thisSelector.combobox.focus();
             });
             this.selectorElement.mouseover(function (e) {
@@ -241,7 +243,7 @@
         
         getSelectedValue : function () {
             if(this.selectedIndex !== -1){
-                return this.selectorElement.find('li').get(this.selectedIndex).innerHTML;
+                return jQuery(this.selectorElement.find('li').get(this.selectedIndex)).text();
             } else {
                 return this.combobox.textInputElement.val();
             }

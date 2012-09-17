@@ -45,10 +45,13 @@
         var thisSelector = this.selector;
         var thisCombobox = this;
         showSelectorButton.click(function (e) {
-            jQuery('html').trigger('click');
-            thisSelector.buildSelectOptionList();
-            thisSelector.show();
-            thisCombobox.focus();
+            if(thisSelector.isVisible() === false) {
+                thisSelector.buildSelectOptionList();
+                thisSelector.show();
+                thisCombobox.focus();
+            } else {
+                thisSelector.hide();
+            }
             return false;
         });
         this.bindKeypress();
@@ -201,6 +204,7 @@
             jQuery('html').keydown(this.keypressHandler);
             this.selectorElement.slideDown('fast');
             jQuery('html').click(this.htmlClickHandler);
+            this.visible = true;
             return true;
         },
 
@@ -210,6 +214,11 @@
             this.selectorElement.unbind('click');
             this.unselect();
             this.selectorElement.hide();
+            this.visible = false;
+        },
+
+        isVisible : function () {
+            return this.visible === true;
         },
 
         selectNext : function () {

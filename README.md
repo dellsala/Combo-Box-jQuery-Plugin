@@ -31,7 +31,7 @@ How to Use it
             'Bananas'
         ]);
 
-	jQuery('#combobox1').combobox('destroy');
+        jQuery('#combobox1').combobox('destroy');
      
     });
 

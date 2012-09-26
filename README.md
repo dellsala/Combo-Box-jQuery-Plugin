@@ -30,6 +30,8 @@ How to Use it
             'Oranges',
             'Bananas'
         ]);
+
+	jQuery('#combobox1').combobox('destroy');
      
     });
 

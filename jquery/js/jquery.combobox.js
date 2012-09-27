@@ -10,20 +10,28 @@
  * Date: 2012-01-15
  */
 (function () {
+    var COMBOBOX_DATA_KEY = 'jQueryCombobox';
+    var EVENT_NAMESPACE = '.jQueryCombobox';
 
     jQuery.fn.combobox = function (selectOptions) {
+        var el, combobox;
+
+        // Destroy comboboxes
+        if(selectOptions === 'destroy') {
+            return this.each(function () {
+                el = jQuery(this);
+                combobox = el.data(COMBOBOX_DATA_KEY);
+                combobox.destroy();
+                el.removeData(COMBOBOX_DATA_KEY)
+            });
+        }
     
         return this.each(function () {
-            var newCombobox = new Combobox(this, selectOptions);
-            jQuery.combobox.instances.push(newCombobox);
+            combobox = new Combobox(this, selectOptions);
+            jQuery(this).data(COMBOBOX_DATA_KEY, combobox);
         });
     
     };
-
-    jQuery.combobox = {
-        instances : []
-    };
-
 
     var Combobox = function (textInputElement, selectOptions) {
         this.textInputElement = jQuery(textInputElement);
@@ -35,16 +43,16 @@
         this.setSelectOptions(selectOptions);
         var inputHeight = this.textInputElement.outerHeight();
         var buttonLeftPosition = this.textInputElement.outerWidth() + 0;
-        var showSelectorButton = jQuery(
+        this.showSelectorButton = jQuery(
             '<a href="#" class="combobox_button" '+
             'style="position:absolute; height:'+inputHeight+'px; width:'+
             inputHeight+'px; top:0; left:'+buttonLeftPosition+'px;"><div class="combobox_arrow"></div></a>'
         );
-        this.textInputElement.css('margin', '0 '+showSelectorButton.outerWidth()+'px 0 0');
-        showSelectorButton.insertAfter(this.textInputElement);
+        this.textInputElement.css('margin', '0 '+this.showSelectorButton.outerWidth()+'px 0 0');
+        this.showSelectorButton.insertAfter(this.textInputElement);
         var thisSelector = this.selector;
         var thisCombobox = this;
-        showSelectorButton.click(function (e) {
+        this.showSelectorButton.bind('click' + EVENT_NAMESPACE, function (e) {
             jQuery('html').trigger('click');
             thisSelector.buildSelectOptionList();
             thisSelector.show();
@@ -63,7 +71,7 @@
 
         bindKeypress : function () {
             var thisCombobox = this;
-            this.textInputElement.keyup(function (event) {
+            this.textInputElement.bind('keyup' + EVENT_NAMESPACE, function (event) {
                 if (event.keyCode == Combobox.keys.TAB
                     || event.keyCode == Combobox.keys.SHIFT) 
                 {
@@ -98,6 +106,12 @@
         
         focus : function () {
             this.textInputElement.trigger('focus');        	
+        },
+
+        destroy : function() {
+            this.textInputElement.unbind(EVENT_NAMESPACE);
+            this.showSelectorButton.unbind(EVENT_NAMESPACE);
+            this.selector.destroy();
         }
         
     };
@@ -198,15 +212,15 @@
             {
                 return false;
             }
-            jQuery('html').keydown(this.keypressHandler);
+            jQuery('html').bind('keydown' + EVENT_NAMESPACE,this.keypressHandler);
             this.selectorElement.slideDown('fast');
-            jQuery('html').click(this.htmlClickHandler);
+            jQuery('html').bind('click' + EVENT_NAMESPACE, this.htmlClickHandler);
             return true;
         },
 
         hide : function () {
-            jQuery('html').unbind('keydown', this.keypressHandler);
-            jQuery('html').unbind('click', this.htmlClickHandler);
+            jQuery('html').unbind('keydown' + EVENT_NAMESPACE, this.keypressHandler);
+            jQuery('html').unbind('click' + EVENT_NAMESPACE, this.htmlClickHandler);
             this.selectorElement.unbind('click');
             this.unselect();
             this.selectorElement.hide();
@@ -245,6 +259,10 @@
             } else {
                 return this.combobox.textInputElement.val();
             }
+        },
+
+        destroy : function() {
+            jQuery('html').unbind(EVENT_NAMESPACE);
         }
 
     };

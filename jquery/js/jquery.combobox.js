@@ -64,19 +64,22 @@
         bindKeypress : function () {
             var thisCombobox = this;
             this.textInputElement.keyup(function (event) {
-                if (event.keyCode == Combobox.keys.TAB
-                    || event.keyCode == Combobox.keys.SHIFT) 
+                if (event.which == Combobox.keys.TAB
+                    || event.which == Combobox.keys.SHIFT) 
                 {
                     return;
                 }
-                if (event.keyCode != Combobox.keys.DOWNARROW
-                    && event.keyCode != Combobox.keys.UPARROW
-                    && event.keyCode != Combobox.keys.ESCAPE
-                    && event.keyCode != Combobox.keys.ENTER)
+                if (event.which != Combobox.keys.DOWNARROW
+                    && event.which != Combobox.keys.UPARROW
+                    && event.which != Combobox.keys.ESCAPE
+                    && event.which != Combobox.keys.ENTER)
                 {
                     thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
                 }
-                if (event.keyCode === Combobox.keys.ENTER)
+                if (event.which === Combobox.keys.ENTER
+                    || event.which === Combobox.keys.CTRL
+                    || event.metaKey === true
+                    || event.ctrlKey === true)
                 {
                     return;
                 }
@@ -106,6 +109,7 @@
         UPARROW : 38,
         DOWNARROW : 40,
         ENTER : 13,
+        CTRL : 17,
         ESCAPE : 27,
         TAB : 9,
         SHIFT : 16
@@ -128,21 +132,21 @@
         ).insertAfter(this.combobox.textInputElement);
         var thisSelector = this;
         this.keypressHandler = function (e) {
-            if (e.keyCode == Combobox.keys.DOWNARROW) {
+            if (e.which == Combobox.keys.DOWNARROW) {
                 thisSelector.selectNext();
-            } else if (e.keyCode == Combobox.keys.UPARROW) {
+            } else if (e.which == Combobox.keys.UPARROW) {
                 thisSelector.selectPrevious();
-            } else if (e.keyCode == Combobox.keys.ESCAPE) {
+            } else if (e.which == Combobox.keys.ESCAPE) {
                 thisSelector.hide();
                 thisSelector.combobox.focus();
-            } else if (e.keyCode == Combobox.keys.ENTER) {
+            } else if (e.which == Combobox.keys.ENTER) {
                 if(thisSelector.selectedIndex !== -1){
                     e.preventDefault();
                 }
                 thisSelector.combobox.setValue(thisSelector.getSelectedValue());
                 thisSelector.combobox.focus();
                 thisSelector.hide();
-            } else if(e.keyCode == Combobox.keys.TAB){
+            } else if(e.which == Combobox.keys.TAB){
                 thisSelector.hide();
             }
         }

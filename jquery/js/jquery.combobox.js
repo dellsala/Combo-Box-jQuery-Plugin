@@ -53,11 +53,15 @@
         var thisSelector = this.selector;
         var thisCombobox = this;
         this.showSelectorButton.bind('click' + EVENT_NAMESPACE, function (e) {
-            jQuery('html').trigger('click');
-            thisSelector.buildSelectOptionList();
-            thisSelector.show();
-            thisCombobox.focus();
-            return false;
+            e.preventDefault();
+            e.stopPropagation();
+
+            if(thisCombobox.isDisabled() === false) {
+                jQuery('html').trigger('click');
+                thisSelector.buildSelectOptionList();
+                thisSelector.show();
+                thisCombobox.focus();
+            }
         });
         this.bindKeypress();
     };
@@ -106,6 +110,10 @@
         
         focus : function () {
             this.textInputElement.trigger('focus');        	
+        },
+
+        isDisabled : function() {
+            return this.textInputElement.prop('disabled');
         },
 
         destroy : function() {

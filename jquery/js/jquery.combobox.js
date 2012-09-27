@@ -10,20 +10,28 @@
  * Date: 2012-01-15
  */
 (function () {
+    var COMBOBOX_DATA_KEY = 'jQueryCombobox';
+    var EVENT_NAMESPACE = '.jQueryCombobox';
 
     jQuery.fn.combobox = function (selectOptions) {
+        var el, combobox;
+
+        // Destroy comboboxes
+        if(selectOptions === 'destroy') {
+            return this.each(function () {
+                el = jQuery(this);
+                combobox = el.data(COMBOBOX_DATA_KEY);
+                combobox.destroy();
+                el.removeData(COMBOBOX_DATA_KEY)
+            });
+        }
     
         return this.each(function () {
-            var newCombobox = new Combobox(this, selectOptions);
-            jQuery.combobox.instances.push(newCombobox);
+            combobox = new Combobox(this, selectOptions);
+            jQuery(this).data(COMBOBOX_DATA_KEY, combobox);
         });
     
     };
-
-    jQuery.combobox = {
-        instances : []
-    };
-
 
     var Combobox = function (textInputElement, selectOptions) {
         this.textInputElement = jQuery(textInputElement);
@@ -35,21 +43,25 @@
         this.setSelectOptions(selectOptions);
         var inputHeight = this.textInputElement.outerHeight();
         var buttonLeftPosition = this.textInputElement.outerWidth() + 0;
-        var showSelectorButton = jQuery(
+        this.showSelectorButton = jQuery(
             '<a href="#" class="combobox_button" '+
             'style="position:absolute; height:'+inputHeight+'px; width:'+
             inputHeight+'px; top:0; left:'+buttonLeftPosition+'px;"><div class="combobox_arrow"></div></a>'
         );
-        this.textInputElement.css('margin', '0 '+showSelectorButton.outerWidth()+'px 0 0');
-        showSelectorButton.insertAfter(this.textInputElement);
+        this.textInputElement.css('margin', '0 '+this.showSelectorButton.outerWidth()+'px 0 0');
+        this.showSelectorButton.insertAfter(this.textInputElement);
         var thisSelector = this.selector;
         var thisCombobox = this;
-        showSelectorButton.click(function (e) {
-            jQuery('html').trigger('click');
-            thisSelector.buildSelectOptionList();
-            thisSelector.show();
-            thisCombobox.focus();
-            return false;
+        this.showSelectorButton.bind('click' + EVENT_NAMESPACE, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if(thisCombobox.isDisabled() === false) {
+                jQuery('html').trigger('click');
+                thisSelector.buildSelectOptionList();
+                thisSelector.show();
+                thisCombobox.focus();
+            }
         });
         this.bindKeypress();
     };
@@ -63,20 +75,23 @@
 
         bindKeypress : function () {
             var thisCombobox = this;
-            this.textInputElement.keyup(function (event) {
-                if (event.keyCode == Combobox.keys.TAB
-                    || event.keyCode == Combobox.keys.SHIFT) 
+            this.textInputElement.bind('keyup' + EVENT_NAMESPACE, function (event) {
+                if (event.which == Combobox.keys.TAB
+                    || event.which == Combobox.keys.SHIFT) 
                 {
                     return;
                 }
-                if (event.keyCode != Combobox.keys.DOWNARROW
-                    && event.keyCode != Combobox.keys.UPARROW
-                    && event.keyCode != Combobox.keys.ESCAPE
-                    && event.keyCode != Combobox.keys.ENTER)
+                if (event.which != Combobox.keys.DOWNARROW
+                    && event.which != Combobox.keys.UPARROW
+                    && event.which != Combobox.keys.ESCAPE
+                    && event.which != Combobox.keys.ENTER)
                 {
                     thisCombobox.selector.buildSelectOptionList(thisCombobox.getValue());
                 }
-                if (event.keyCode === Combobox.keys.ENTER)
+                if (event.which === Combobox.keys.ENTER
+                    || event.which === Combobox.keys.CTRL
+                    || event.metaKey === true
+                    || event.ctrlKey === true)
                 {
                     return;
                 }
@@ -98,6 +113,16 @@
         
         focus : function () {
             this.textInputElement.trigger('focus');        	
+        },
+
+        isDisabled : function() {
+            return this.textInputElement.prop('disabled');
+        },
+
+        destroy : function() {
+            this.textInputElement.unbind(EVENT_NAMESPACE);
+            this.showSelectorButton.unbind(EVENT_NAMESPACE);
+            this.selector.destroy();
         }
         
     };
@@ -106,6 +131,7 @@
         UPARROW : 38,
         DOWNARROW : 40,
         ENTER : 13,
+        CTRL : 17,
         ESCAPE : 27,
         TAB : 9,
         SHIFT : 16
@@ -128,21 +154,21 @@
         ).insertAfter(this.combobox.textInputElement);
         var thisSelector = this;
         this.keypressHandler = function (e) {
-            if (e.keyCode == Combobox.keys.DOWNARROW) {
+            if (e.which == Combobox.keys.DOWNARROW) {
                 thisSelector.selectNext();
-            } else if (e.keyCode == Combobox.keys.UPARROW) {
+            } else if (e.which == Combobox.keys.UPARROW) {
                 thisSelector.selectPrevious();
-            } else if (e.keyCode == Combobox.keys.ESCAPE) {
+            } else if (e.which == Combobox.keys.ESCAPE) {
                 thisSelector.hide();
                 thisSelector.combobox.focus();
-            } else if (e.keyCode == Combobox.keys.ENTER) {
+            } else if (e.which == Combobox.keys.ENTER) {
                 if(thisSelector.selectedIndex !== -1){
                     e.preventDefault();
                 }
                 thisSelector.combobox.setValue(thisSelector.getSelectedValue());
                 thisSelector.combobox.focus();
                 thisSelector.hide();
-            } else if(e.keyCode == Combobox.keys.TAB){
+            } else if(e.which == Combobox.keys.TAB){
                 thisSelector.hide();
             }
         }
@@ -198,15 +224,15 @@
             {
                 return false;
             }
-            jQuery('html').keydown(this.keypressHandler);
+            jQuery('html').bind('keydown' + EVENT_NAMESPACE,this.keypressHandler);
             this.selectorElement.slideDown('fast');
-            jQuery('html').click(this.htmlClickHandler);
+            jQuery('html').bind('click' + EVENT_NAMESPACE, this.htmlClickHandler);
             return true;
         },
 
         hide : function () {
-            jQuery('html').unbind('keydown', this.keypressHandler);
-            jQuery('html').unbind('click', this.htmlClickHandler);
+            jQuery('html').unbind('keydown' + EVENT_NAMESPACE, this.keypressHandler);
+            jQuery('html').unbind('click' + EVENT_NAMESPACE, this.htmlClickHandler);
             this.selectorElement.unbind('click');
             this.unselect();
             this.selectorElement.hide();
@@ -245,6 +271,10 @@
             } else {
                 return this.combobox.textInputElement.val();
             }
+        },
+
+        destroy : function() {
+            jQuery('html').unbind(EVENT_NAMESPACE);
         }
 
     };
